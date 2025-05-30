@@ -5,42 +5,132 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:UPMurtazinIS121"
         mc:Ignorable="d"
-        Title="Ингредиенты" Height="450" Width="800">
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="2*"/>
-        </Grid.ColumnDefinitions>
+        Title="Учет ингредиентов - Кофейный Рай" 
+        Height="720" Width="900"
+        WindowStartupLocation="CenterScreen">
+    <Grid Margin="10">
+        <TextBlock Text="УЧЕТ ИНГРЕДИЕНТОВ" 
+                   FontSize="24" FontWeight="Bold" 
+                   Foreground="{StaticResource AccentBrush}"
+                   HorizontalAlignment="Center" 
+                   VerticalAlignment="Top"
+                   Margin="0,10"/>
 
-        <!-- Список ингредиентов -->
-        <ListBox Grid.Column="0" 
-                 ItemsSource="{Binding IngredientsList}"
-                 SelectedItem="{Binding SelectedIngredient}"
-                 DisplayMemberPath="IngredientsName"/>
+        <!-- Разделение на левую и правую часть -->
+        <Grid Margin="0,50,0,50">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="10"/>
+                <!-- Разделитель -->
+                <ColumnDefinition Width="1.2*"/>
+            </Grid.ColumnDefinitions>
 
-        <!-- Детали выбранного ингредиента -->
-        <StackPanel Grid.Column="1" Margin="10" DataContext="{Binding SelectedIngredient}">
-            <TextBlock Text="Детали ингредиента" FontWeight="Bold" Margin="0,0,0,10"/>
+            <!-- Левая часть - Список ингредиентов -->
+            <Border Grid.Column="0"
+                    Background="{StaticResource SecondaryBackgroundBrush}"
+                    CornerRadius="5"
+                    Padding="10">
+                <ListView ItemsSource="{Binding IngredientsList}"
+                          SelectedItem="{Binding SelectedIngredient}"
+                          BorderThickness="0"
+                          ScrollViewer.VerticalScrollBarVisibility="Auto"
+                          ItemContainerStyle="{StaticResource ListViewItemStyle}">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Vertical" Margin="5">
+                                <TextBlock Text="{Binding IngredientsName}" 
+                                           FontWeight="Bold" 
+                                           FontSize="16"/>
+                                <TextBlock Text="{Binding TypeIngredients}" 
+                                           FontStyle="Italic"/>
+                                <TextBlock>
+                                    <TextBlock.Text>
+                                        <MultiBinding StringFormat="{}{0:N2} {1}">
+                                            <Binding Path="KolichSklad"/>
+                                            <Binding Path="EdinIzmereniya"/>
+                                        </MultiBinding>
+                                    </TextBlock.Text>
+                                </TextBlock>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </Border>
 
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <!-- Добавьте строки для других свойств -->
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
+            <GridSplitter Grid.Column="1" Width="6" Background="{StaticResource AccentBrush}" IsEnabled="False"/>
 
-                <TextBlock Text="Название:" Grid.Row="0" Grid.Column="0"/>
-                <TextBox Text="{Binding IngredientsName}" Grid.Row="0" Grid.Column="1" Margin="5"/>
+            <Border Grid.Column="2"
+                    Background="{StaticResource SecondaryBackgroundBrush}"
+                    CornerRadius="5"
+                    Padding="15">
 
-                <TextBlock Text="Тип:" Grid.Row="1" Grid.Column="0"/>
-                <TextBox Text="{Binding TypeIngredients}" Grid.Row="1" Grid.Column="1" Margin="5"/>
+                <ItemsControl DataContext="{Binding SelectedIngredient}">
+                    <ItemsControl.Template>
+                        <ControlTemplate>
+                            <StackPanel>
+                                <TextBlock Text="Редактирование ингредиента" 
+                                           FontSize="18" FontWeight="Bold"
+                                           HorizontalAlignment="Center"
+                                           Margin="0,0,0,15"/>
 
-                <!-- Добавьте другие свойства по аналогии -->
-            </Grid>
-        </StackPanel>
+                                <TextBlock Text="Название:"/>
+                                <TextBox Text="{Binding IngredientsName}" />
+
+                                <TextBlock Text="Тип:"/>
+                                <TextBox Text="{Binding TypeIngredients}" />
+
+                                <TextBlock Text="Ед. измерения:"/>
+                                <TextBox Text="{Binding EdinIzmereniya}" />
+
+                                <TextBlock Text="На складе:"/>
+                                <TextBox Text="{Binding KolichSklad, StringFormat={}{0:N2}}" />
+
+                                <TextBlock Text="Мин. кол-во:"/>
+                                <TextBox Text="{Binding MinimKolich}" />
+
+                                <TextBlock Text="Цена за ед.:"/>
+                                <TextBox Text="{Binding CostForOne, StringFormat={}{0:N2}}" />
+
+                                <Label Content="Стоимость мин. партии" FontWeight="Bold"/>
+                                <TextBlock Text="{Binding MinOrderCost, StringFormat={}{0:N2}}" 
+                                           FontSize="16" FontWeight="Bold" Margin="0,0,0,20"/>
+
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                    <Button Content="Сохранить" 
+            Command="{Binding SaveCommand}"
+            Background="#689F38"
+            Foreground="White"
+            Margin="0,0,10,0"
+            Padding="15,5"
+            MinWidth="100"/>
+
+                                    <Button Content="Добавить новый" 
+            Command="{Binding AddNewCommand}"
+            Background="{StaticResource AccentBrush}"
+            Foreground="White"
+            Padding="15,5"
+            MinWidth="100"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </ControlTemplate>
+                    </ItemsControl.Template>
+                </ItemsControl>
+
+            </Border>
+
+        </Grid>
+
+
+        <StatusBar VerticalAlignment="Bottom" Background="{StaticResource AccentBrush}">
+            <StatusBarItem>
+                <TextBlock Text="Кофейный Рай © 2023" Foreground="{StaticResource LightTextBrush}"/>
+            </StatusBarItem>
+            <StatusBarItem HorizontalAlignment="Right">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Всего ингредиентов: " Foreground="{StaticResource LightTextBrush}"/>
+                    <TextBlock Text="{Binding IngredientsList.Count}" Foreground="{StaticResource LightTextBrush}"/>
+                </StackPanel>
+            </StatusBarItem>
+        </StatusBar>
     </Grid>
 </Window>
