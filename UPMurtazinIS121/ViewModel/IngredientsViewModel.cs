@@ -35,29 +35,61 @@ namespace UPMurtazinIS121.ViewModel
         public IngredientsViewModel()
         {
             _context = new CoffeeDBMurtazinEntities1();
-            _context.Configuration.ProxyCreationEnabled = false;
-            _context.Configuration.AutoDetectChangesEnabled = true;
-            _context.Ingredients.Load();
-            IngredientsList = _context.Ingredients.Local;
+            ConfigureContext();
+            LoadData();
 
             SaveCommand = new RelayCommand(
-                _ => SaveChanges(),
-                _ => SelectedIngredient != null && IsIngredientValid(SelectedIngredient));
+                SaveChanges,
+                () => SelectedIngredient != null && IsIngredientValid(SelectedIngredient));
 
-            AddNewCommand = new RelayCommand(
-                _ => AddNewIngredient(),
-                _ => true);
+            AddNewCommand = new RelayCommand(AddNewIngredient);
+        }
 
-            IngredientsList.CollectionChanged += (s, e) =>
+        private void ConfigureContext()
+        {
+            _context.Configuration.ProxyCreationEnabled = false;
+            _context.Configuration.AutoDetectChangesEnabled = true;
+            _context.Configuration.ValidateOnSaveEnabled = true;
+        }
+
+        private void LoadData()
+        {
+            try
             {
-                if (e.NewItems != null)
-                    foreach (Ingredients item in e.NewItems)
-                        item.PropertyChanged += IngredientPropertyChanged;
+                _context.Ingredients.Load();
+                IngredientsList = _context.Ingredients.Local;
+                IngredientsList.CollectionChanged += IngredientsCollectionChanged;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка загрузки данных: {ex.Message}", "Ошибка",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+                IngredientsList = new ObservableCollection<Ingredients>();
+            }
+        }
 
-                if (e.OldItems != null)
-                    foreach (Ingredients item in e.OldItems)
-                        item.PropertyChanged -= IngredientPropertyChanged;
-            };
+        private void IngredientsCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            if (e.NewItems != null)
+            {
+                foreach (Ingredients item in e.NewItems)
+                {
+                    item.PropertyChanged += IngredientPropertyChanged;
+                    if (item.IngredientsID == 0) // Новый элемент
+                    {
+                        _context.Ingredients.Add(item);
+                    }
+                }
+            }
+
+            if (e.OldItems != null)
+            {
+                foreach (Ingredients item in e.OldItems)
+                {
+                    item.PropertyChanged -= IngredientPropertyChanged;
+                    _context.Ingredients.Remove(item);
+                }
+            }
         }
 
         private void IngredientPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -72,49 +104,63 @@ namespace UPMurtazinIS121.ViewModel
                    ingredient.MinimKolich >= 0 &&
                    ingredient.CostForOne >= 0;
         }
+        public bool HasChanges()
+        {
+            return _context.ChangeTracker.Entries()
+                .Any(e => e.State == EntityState.Added ||
+                         e.State == EntityState.Modified ||
+                         e.State == EntityState.Deleted);
+        }
 
         private void SaveChanges()
         {
             try
             {
-                _context.SaveChanges();
-                MessageBox.Show("Изменения успешно сохранены в базе данных!", "Успех",
-                    MessageBoxButton.OK, MessageBoxImage.Information);
+                var changes = _context.ChangeTracker.Entries()
+                    .Count(e => e.State != EntityState.Unchanged);
+
+                if (changes > 0)
+                {
+                    _context.SaveChanges();
+                    MessageBox.Show($"Успешно сохранено {changes} изменений!", "Сохранено",
+                        MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                else
+                {
+                    MessageBox.Show("Нет изменений для сохранения", "Информация",
+                        MessageBoxButton.OK, MessageBoxImage.Information);
+                }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Ошибка сохранения: {ex.Message}\n\nПроверьте введенные данные.", "Ошибка",
+                string errorDetails = ex.InnerException != null
+                    ? $"\nДетали: {ex.InnerException.Message}"
+                    : "";
+
+                MessageBox.Show($"Ошибка сохранения: {ex.Message}{errorDetails}", "Ошибка",
                     MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
         private void AddNewIngredient()
         {
-            try
+            var newIngredient = new Ingredients
             {
-                var newIngredient = new Ingredients
-                {
-                    IngredientsName = "Новый ингредиент",
-                    TypeIngredients = "Тип",
-                    EdinIzmereniya = "кг",
-                    KolichSklad = 0,
-                    MinimKolich = 0,
-                    KolichUpakovka = 1,
-                    CostForOne = 0
-                };
+                IngredientsName = "Новый ингредиент",
+                TypeIngredients = "Тип",
+                EdinIzmereniya = "кг",
+                KolichSklad = 0,
+                MinimKolich = 0,
+                KolichUpakovka = 1,
+                CostForOne = 0,
+                ExpirationDate = DateTime.Now.AddMonths(6)
+            };
 
-                _context.Ingredients.Add(newIngredient);
-                IngredientsList.Add(newIngredient);
-                SelectedIngredient = newIngredient;
+            IngredientsList.Add(newIngredient);
+            SelectedIngredient = newIngredient;
 
-                MessageBox.Show("Новый ингредиент добавлен. Не забудьте сохранить изменения!", "Добавлено",
-                    MessageBoxButton.OK, MessageBoxImage.Information);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Ошибка при добавлении: {ex.Message}", "Ошибка",
-                    MessageBoxButton.OK, MessageBoxImage.Error);
-            }
+            MessageBox.Show("Новый ингредиент добавлен!\nНе забудьте сохранить изменения.", "Добавлено",
+                MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

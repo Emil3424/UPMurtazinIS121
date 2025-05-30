@@ -96,20 +96,22 @@
                                            FontSize="16" FontWeight="Bold" Margin="0,0,0,20"/>
 
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                                    <Button Content="Сохранить" 
+                                    <Button Content="СОХРАНИТЬ ВСЕ" 
             Command="{Binding SaveCommand}"
+            Background="#5D4037"
+            Foreground="White"
+            FontWeight="Bold"
+            Margin="0,0,10,0"
+            Padding="20,10"
+            MinWidth="180"/>
+
+                                    <Button Content="+ ДОБАВИТЬ НОВЫЙ"
+            Command="{Binding AddNewCommand}"
             Background="#689F38"
             Foreground="White"
-            Margin="0,0,10,0"
-            Padding="15,5"
-            MinWidth="100"/>
-
-                                    <Button Content="Добавить новый" 
-            Command="{Binding AddNewCommand}"
-            Background="{StaticResource AccentBrush}"
-            Foreground="White"
-            Padding="15,5"
-            MinWidth="100"/>
+            FontWeight="Bold"
+            Padding="20,10"
+            MinWidth="180"/>
                                 </StackPanel>
                             </StackPanel>
                         </ControlTemplate>

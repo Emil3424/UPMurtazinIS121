@@ -4,8 +4,7 @@ namespace UPMurtazinIS121.Model
     using System.Collections.Generic;
     using System.ComponentModel;
     using System.Runtime.CompilerServices;
-    using UPMurtazinIS121.ViewModel;
-    
+
     public partial class Ingredients : INotifyPropertyChanged
     {
         public Ingredients()
@@ -106,7 +105,7 @@ namespace UPMurtazinIS121.Model
         }
         public string Description { get; set; }
         public Nullable<System.DateTime> ExpirationDate { get; set; }
-    
+
         public virtual EdIzmereniya EdIzmereniya { get; set; }
         public virtual TypeIngredients TypeIngredients1 { get; set; }
         public virtual ICollection<InventoryAlerts> InventoryAlerts { get; set; }
