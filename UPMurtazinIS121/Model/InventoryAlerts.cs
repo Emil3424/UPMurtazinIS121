@@ -15,11 +15,11 @@ namespace UPMurtazinIS121.Model
     public partial class InventoryAlerts
     {
         public int AlertID { get; set; }
-        public string IngredientsName { get; set; }
         public System.DateTime AlertDate { get; set; }
         public bool IsResolved { get; set; }
         public Nullable<int> ResolvedBy { get; set; }
         public Nullable<System.DateTime> ResolvedDate { get; set; }
+        public Nullable<int> IngredientID { get; set; }
     
         public virtual Employees Employees { get; set; }
         public virtual Ingredients Ingredients { get; set; }

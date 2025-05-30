@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Data;
 using System.Data.Entity;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -12,44 +13,34 @@ namespace UPMurtazinIS121.ViewModel
 {
     public class IngredientsViewModel : INotifyPropertyChanged
     {
-        private readonly CoffeeDBMurtazinEntities1 _context;
+        private readonly CoffeeDBMurtazinEntities2 _context;
         private Ingredients _selectedIngredient;
 
-        public ObservableCollection<Ingredients> IngredientsList { get; }
+        public ObservableCollection<Ingredients> IngredientsList { get; } = [];
 
         public Ingredients SelectedIngredient
         {
             get => _selectedIngredient;
             set
             {
-                if (_selectedIngredient == value) return;
                 _selectedIngredient = value;
                 OnPropertyChanged();
-                ((RelayCommand)SaveCommand).RaiseCanExecuteChanged();
             }
         }
 
         public ICommand SaveCommand { get; }
         public ICommand AddNewCommand { get; }
+        public ICommand DeleteCommand { get; }
 
         public IngredientsViewModel()
         {
-            _context = new CoffeeDBMurtazinEntities1();
-            ConfigureContext();
+            _context = new CoffeeDBMurtazinEntities2();
+            _context.Configuration.ProxyCreationEnabled = false;
             LoadData();
 
-            SaveCommand = new RelayCommand(
-                SaveChanges,
-                () => SelectedIngredient != null && IsIngredientValid(SelectedIngredient));
-
+            SaveCommand = new RelayCommand(SaveChanges);
             AddNewCommand = new RelayCommand(AddNewIngredient);
-        }
-
-        private void ConfigureContext()
-        {
-            _context.Configuration.ProxyCreationEnabled = false;
-            _context.Configuration.AutoDetectChangesEnabled = true;
-            _context.Configuration.ValidateOnSaveEnabled = true;
+            DeleteCommand = new RelayCommand(DeleteIngredient);
         }
 
         private void LoadData()
@@ -57,92 +48,43 @@ namespace UPMurtazinIS121.ViewModel
             try
             {
                 _context.Ingredients.Load();
-                IngredientsList = _context.Ingredients.Local;
-                IngredientsList.CollectionChanged += IngredientsCollectionChanged;
+                foreach (var ingredient in _context.Ingredients.Local)
+                {
+                    IngredientsList.Add(ingredient);
+                }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Ошибка загрузки данных: {ex.Message}", "Ошибка",
+                MessageBox.Show($"Ошибка загрузки: {ex.Message}", "Ошибка",
                     MessageBoxButton.OK, MessageBoxImage.Error);
-                IngredientsList = new ObservableCollection<Ingredients>();
             }
         }
 
-        private void IngredientsCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-        {
-            if (e.NewItems != null)
-            {
-                foreach (Ingredients item in e.NewItems)
-                {
-                    item.PropertyChanged += IngredientPropertyChanged;
-                    if (item.IngredientsID == 0) // Новый элемент
-                    {
-                        _context.Ingredients.Add(item);
-                    }
-                }
-            }
-
-            if (e.OldItems != null)
-            {
-                foreach (Ingredients item in e.OldItems)
-                {
-                    item.PropertyChanged -= IngredientPropertyChanged;
-                    _context.Ingredients.Remove(item);
-                }
-            }
-        }
-
-        private void IngredientPropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            ((RelayCommand)SaveCommand).RaiseCanExecuteChanged();
-        }
-
-        private bool IsIngredientValid(Ingredients ingredient)
-        {
-            return !string.IsNullOrWhiteSpace(ingredient.IngredientsName) &&
-                   ingredient.KolichSklad >= 0 &&
-                   ingredient.MinimKolich >= 0 &&
-                   ingredient.CostForOne >= 0;
-        }
         public bool HasChanges()
         {
             return _context.ChangeTracker.Entries()
-                .Any(e => e.State == EntityState.Added ||
-                         e.State == EntityState.Modified ||
-                         e.State == EntityState.Deleted);
+                .Any(e => e.State != EntityState.Unchanged);
         }
 
-        private void SaveChanges()
+        private void SaveChanges(object parameter)
         {
             try
             {
-                var changes = _context.ChangeTracker.Entries()
-                    .Count(e => e.State != EntityState.Unchanged);
-
-                if (changes > 0)
+                if (HasChanges())
                 {
                     _context.SaveChanges();
-                    MessageBox.Show($"Успешно сохранено {changes} изменений!", "Сохранено",
-                        MessageBoxButton.OK, MessageBoxImage.Information);
-                }
-                else
-                {
-                    MessageBox.Show("Нет изменений для сохранения", "Информация",
+                    MessageBox.Show("Изменения сохранены!", "Успех",
                         MessageBoxButton.OK, MessageBoxImage.Information);
                 }
             }
             catch (Exception ex)
             {
-                string errorDetails = ex.InnerException != null
-                    ? $"\nДетали: {ex.InnerException.Message}"
-                    : "";
-
-                MessageBox.Show($"Ошибка сохранения: {ex.Message}{errorDetails}", "Ошибка",
+                MessageBox.Show($"Ошибка сохранения: {ex.Message}", "Ошибка",
                     MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
-        private void AddNewIngredient()
+        private void AddNewIngredient(object parameter)
         {
             var newIngredient = new Ingredients
             {
@@ -158,13 +100,47 @@ namespace UPMurtazinIS121.ViewModel
 
             IngredientsList.Add(newIngredient);
             SelectedIngredient = newIngredient;
+            _context.Ingredients.Add(newIngredient);
+        }
 
-            MessageBox.Show("Новый ингредиент добавлен!\nНе забудьте сохранить изменения.", "Добавлено",
-                MessageBoxButton.OK, MessageBoxImage.Information);
+        private void DeleteIngredient(object parameter)
+        {
+            if (SelectedIngredient == null) return;
+
+            if (MessageBox.Show($"Удалить {SelectedIngredient.IngredientsName}?",
+                "Подтверждение",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Question) != MessageBoxResult.Yes) return;
+
+            try
+            {
+                if (_context.Entry(SelectedIngredient).State == EntityState.Detached)
+                {
+                    var ingredientToDelete = _context.Ingredients.Find(SelectedIngredient.IngredientID);
+                    if (ingredientToDelete != null)
+                    {
+                        _context.Ingredients.Remove(ingredientToDelete);
+                    }
+                }
+                else
+                {
+                    _context.Ingredients.Remove(SelectedIngredient);
+                }
+
+                _context.SaveChanges();
+
+                IngredientsList.Remove(SelectedIngredient);
+
+                SelectedIngredient = IngredientsList.FirstOrDefault();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка удаления: {ex.Message}", "Ошибка",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));

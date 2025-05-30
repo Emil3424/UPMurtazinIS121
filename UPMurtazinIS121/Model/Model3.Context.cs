@@ -13,10 +13,10 @@ namespace UPMurtazinIS121.Model
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
     
-    public partial class CoffeeDBMurtazinEntities1 : DbContext
+    public partial class CoffeeDBMurtazinEntities2 : DbContext
     {
-        public CoffeeDBMurtazinEntities1()
-            : base("name=CoffeeDBMurtazinEntities1")
+        public CoffeeDBMurtazinEntities2()
+            : base("name=CoffeeDBMurtazinEntities2")
         {
         }
     

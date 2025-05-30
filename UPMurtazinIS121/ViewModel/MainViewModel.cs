@@ -8,7 +8,7 @@ namespace UPMurtazinIS121.ViewModel
 {
     public class MainViewModel : INotifyPropertyChanged
     {
-        private readonly CoffeeDBMurtazinEntities1 _context = new CoffeeDBMurtazinEntities1();
+        private readonly CoffeeDBMurtazinEntities2 _context = new();
 
         public ObservableCollection<Ingredients> IngredientsList { get; set; }
 

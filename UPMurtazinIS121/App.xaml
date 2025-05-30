@@ -4,8 +4,6 @@
              xmlns:local="clr-namespace:UPMurtazinIS121"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-
-
         <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="Padding" Value="5"/>
@@ -32,7 +30,6 @@
             <Style.Triggers>
                 <Trigger Property="IsFocused" Value="True">
                     <Setter Property="BorderBrush" Value="#5D4037"/>
-                    <!-- Всегда явный цвет -->
                 </Trigger>
                 <Trigger Property="Validation.HasError" Value="true">
                     <Setter Property="BorderBrush" Value="Red"/>
@@ -42,20 +39,17 @@
             </Style.Triggers>
         </Style>
 
-        <!-- Цветовая палитра -->
         <Color x:Key="PrimaryBackground">#F9F5F0</Color>
         <Color x:Key="SecondaryBackground">#D7CCC8</Color>
         <Color x:Key="AccentColor">#5D4037</Color>
         <Color x:Key="LightTextColor">#FFF8F0</Color>
 
-        <!-- Кисти -->
         <SolidColorBrush x:Key="PrimaryBackgroundBrush" Color="{StaticResource PrimaryBackground}"/>
         <SolidColorBrush x:Key="SecondaryBackgroundBrush" Color="{StaticResource SecondaryBackground}"/>
         <SolidColorBrush x:Key="AccentBrush" Color="{StaticResource AccentColor}"/>
         <SolidColorBrush x:Key="LightTextBrush" Color="{StaticResource LightTextColor}"/>
         <SolidColorBrush x:Key="DarkTextBrush" Color="{StaticResource AccentColor}"/>
 
-        <!-- Общие стили -->
         <Style TargetType="Window">
             <Setter Property="Background" Value="{StaticResource PrimaryBackgroundBrush}"/>
             <Setter Property="FontFamily" Value="Roboto"/>
@@ -69,7 +63,6 @@
             <Setter Property="VerticalAlignment" Value="Center"/>
         </Style>
 
-        <!-- Стиль для заголовков столбцов -->
         <Style x:Key="ColumnHeaderStyle" TargetType="GridViewColumnHeader">
             <Setter Property="Background" Value="{StaticResource AccentBrush}"/>
             <Setter Property="Foreground" Value="{StaticResource LightTextBrush}"/>
@@ -79,14 +72,12 @@
             <Setter Property="BorderThickness" Value="0"/>
         </Style>
 
-        <!-- Стиль для ListView -->
         <Style x:Key="StyledListView" TargetType="ListView">
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="Margin" Value="10"/>
         </Style>
 
-        <!-- Стиль для элементов ListView -->
         <Style x:Key="ListViewItemStyle" TargetType="ListViewItem">
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="FontFamily" Value="Roboto"/>
