@@ -1,0 +1,36 @@
+namespace UPMurtazinIS121.Model
+{
+    using System;
+    using System.Collections.Generic;
+    using System.ComponentModel;
+    
+    public partial class Ingredients : INotifyPropertyChanged
+    {
+        public Ingredients()
+        {
+            this.InventoryAlerts = new HashSet<InventoryAlerts>();
+            this.InventoryTransactions = new HashSet<InventoryTransactions>();
+            this.Recipes = new HashSet<Recipes>();
+            this.Suppliers = new HashSet<Suppliers>();
+        }
+    
+        public string IngredientsName { get; set; }
+        public string TypeIngredients { get; set; }
+        public string EdinIzmereniya { get; set; }
+        public Nullable<decimal> KolichSklad { get; set; }
+        public Nullable<int> MinimKolich { get; set; }
+        public Nullable<int> KolichUpakovka { get; set; }
+        public Nullable<int> CostForOne { get; set; }
+        public string Description { get; set; }
+        public Nullable<System.DateTime> ExpirationDate { get; set; }
+    
+        public virtual EdIzmereniya EdIzmereniya { get; set; }
+        public virtual TypeIngredients TypeIngredients1 { get; set; }
+        public virtual ICollection<InventoryAlerts> InventoryAlerts { get; set; }
+        public virtual ICollection<InventoryTransactions> InventoryTransactions { get; set; }
+        public virtual ICollection<Recipes> Recipes { get; set; }
+        public virtual ICollection<Suppliers> Suppliers { get; set; }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+    }
+}
