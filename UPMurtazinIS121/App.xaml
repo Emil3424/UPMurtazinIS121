@@ -4,6 +4,7 @@
              xmlns:local="clr-namespace:UPMurtazinIS121"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
+        
         <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="Padding" Value="5"/>

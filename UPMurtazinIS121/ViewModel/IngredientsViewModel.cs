@@ -88,7 +88,7 @@ namespace UPMurtazinIS121.ViewModel
         {
             var newIngredient = new Ingredients
             {
-                IngredientsName = "Новый ингредиент",
+                IngredientsName = "Новый ингредиент " + _context.Ingredients.Count(),
                 TypeIngredients = "Тип",
                 EdinIzmereniya = "кг",
                 KolichSklad = 0,

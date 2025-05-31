@@ -39,16 +39,37 @@
                                 <TextBlock Text="{Binding IngredientsName}" 
                                            FontWeight="Bold" 
                                            FontSize="16"/>
-                                <TextBlock Text="{Binding TypeIngredients}" 
-                                           FontStyle="Italic"/>
-                                <TextBlock>
-                                    <TextBlock.Text>
-                                        <MultiBinding StringFormat="{}{0:N2} {1}">
-                                            <Binding Path="KolichSklad"/>
-                                            <Binding Path="EdinIzmereniya"/>
-                                        </MultiBinding>
-                                    </TextBlock.Text>
-                                </TextBlock>
+                                
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="{Binding TypeIngredients}" FontStyle="Italic"/>
+                                    <TextBlock Text="Минимальное количество: " FontStyle="Italic"
+                                               Margin="50,0,0,0" />
+                                    <TextBlock Text="{Binding MinimKolich}" FontStyle="Italic"/>
+                                </StackPanel>
+
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock>
+                                        <TextBlock.Text>
+                                            <MultiBinding StringFormat="{}{0:N2} {1}">
+                                                <Binding Path="KolichSklad"/>
+                                                <Binding Path="EdinIzmereniya"/>
+                                            </MultiBinding>
+                                        </TextBlock.Text>
+                                    </TextBlock>
+
+                                    <TextBlock Text="Количество в упаковке: " FontStyle="Italic"
+                                               Margin="50,0,0,0" />
+                                    <TextBlock Text="{Binding KolichUpakovka}"/>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="Цена: " FontStyle="Italic"
+                                               Margin="50,0,0,0" />
+                                    <TextBlock Text="{Binding CostForOne}"/>
+                                    <TextBlock Text="Стоимость мин. партии: " FontStyle="Italic"
+                                               Margin="50,0,0,0" />
+                                    <TextBlock Text="{Binding MinOrderCost}"/>
+                                </StackPanel>
+
                             </StackPanel>
                         </DataTemplate>
                     </ListView.ItemTemplate>
