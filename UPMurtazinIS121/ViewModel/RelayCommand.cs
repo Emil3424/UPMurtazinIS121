@@ -3,9 +3,14 @@ using System.Windows.Input;
 
 namespace UPMurtazinIS121
 {
-    public class RelayCommand(Action<object> execute) : ICommand
+    public class RelayCommand : ICommand
     {
-        private readonly Action<object> _execute = execute ?? throw new ArgumentNullException(nameof(execute));
+        private readonly Action<object> _execute;
+
+        public RelayCommand(Action<object> execute)
+        {
+            _execute = execute ?? throw new ArgumentNullException(nameof(execute));
+        }
 
         public event EventHandler CanExecuteChanged
         {

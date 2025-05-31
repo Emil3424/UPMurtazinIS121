@@ -4,10 +4,15 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:UPMurtazinIS121"
+        xmlns:locall="clr-namespace:UPMurtazinIS121.ViewModel"
         mc:Ignorable="d"
         Title="Учет ингредиентов - Кофейный Рай" 
-        Height="790" Width="1200"
+        Height="800" Width="1200"
         WindowStartupLocation="CenterScreen">
+    <Window.DataContext>
+        <locall:IngredientsViewModel/>
+    </Window.DataContext>
+
     <Grid Margin="10">
         <TextBlock Text="УЧЕТ ИНГРЕДИЕНТОВ" 
                    FontSize="24" FontWeight="Bold" 
@@ -28,55 +33,95 @@
                     Background="{StaticResource SecondaryBackgroundBrush}"
                     CornerRadius="5"
                     Padding="10">
-                <ListView ItemsSource="{Binding IngredientsList}"
-                          SelectedItem="{Binding SelectedIngredient}"
-                          BorderThickness="0"
-                          ScrollViewer.CanContentScroll="False"
-                          ScrollViewer.VerticalScrollBarVisibility="Auto">
-                    <ListView.ItemTemplate>
-                        <DataTemplate>
-                            <StackPanel Orientation="Vertical" Margin="5">
-                                <TextBlock Text="{Binding IngredientsName}" 
-                                           FontWeight="Bold" 
-                                           FontSize="16"/>
-                                
-                                <StackPanel Orientation="Horizontal">
-                                    <TextBlock Text="{Binding TypeIngredients}" FontStyle="Italic"/>
-                                    <TextBlock Text="Минимальное количество: " FontStyle="Italic"
-                                               Margin="50,0,0,0" />
-                                    <TextBlock Text="{Binding MinimKolich}" FontStyle="Italic"/>
-                                </StackPanel>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
 
-                                <StackPanel Orientation="Horizontal">
-                                    <TextBlock>
-                                        <TextBlock.Text>
-                                            <MultiBinding StringFormat="{}{0:N2} {1}">
-                                                <Binding Path="KolichSklad"/>
-                                                <Binding Path="EdinIzmereniya"/>
-                                            </MultiBinding>
-                                        </TextBlock.Text>
-                                    </TextBlock>
+                    <!-- Фильтр по типу -->
+                    <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,10">
+                        <TextBlock Text="Фильтр по типу:" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                        <ComboBox ItemsSource="{Binding IngredientTypes}"
+                                  SelectedItem="{Binding SelectedFilterType}"
+                                  Width="200"
+                                  IsEditable="False">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding}"/>
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
+                    </StackPanel>
 
-                                    <TextBlock Text="Количество в упаковке: " FontStyle="Italic"
-                                               Margin="50,0,0,0" />
-                                    <TextBlock Text="{Binding KolichUpakovka}"/>
-                                </StackPanel>
-                                <StackPanel Orientation="Horizontal">
-                                    <TextBlock Text="Цена: " FontStyle="Italic"
-                                               Margin="50,0,0,0" />
-                                    <TextBlock Text="{Binding CostForOne}"/>
-                                    <TextBlock Text="Стоимость мин. партии: " FontStyle="Italic"
-                                               Margin="50,0,0,0" />
-                                    <TextBlock Text="{Binding MinOrderCost}"/>
-                                </StackPanel>
+                    <ListView Grid.Row="1"
+                              ItemsSource="{Binding FilteredIngredientsList}"
+                              SelectedItem="{Binding SelectedIngredient}"
+                              Background="{StaticResource SecondaryBackgroundBrush}"
+                              BorderThickness="0"
+                              HorizontalContentAlignment="Stretch"
+                              ScrollViewer.CanContentScroll="False"
+                              ScrollViewer.VerticalScrollBarVisibility="Auto">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <Border Background="White" CornerRadius="4" Padding="8" Margin="0,0,0,10">
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <!-- Название -->
+                                            <RowDefinition Height="Auto"/>
+                                            <!-- Первая строка данных -->
+                                            <RowDefinition Height="Auto"/>
+                                            <!-- Вторая строка данных -->
+                                            <RowDefinition Height="Auto"/>
+                                            <!-- Третья строка данных -->
+                                        </Grid.RowDefinitions>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="2*" />
+                                            <ColumnDefinition Width="2*" />
+                                            <ColumnDefinition Width="2*" />
+                                            <ColumnDefinition Width="2*" />
+                                        </Grid.ColumnDefinitions>
 
-                            </StackPanel>
-                        </DataTemplate>
-                    </ListView.ItemTemplate>
-                </ListView>
+                                        <!-- Название ингредиента -->
+                                        <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="4"
+                                               Text="{Binding IngredientsName}"
+                                               FontWeight="Bold" FontSize="16"
+                                               Margin="0,0,0,8"/>
+
+                                        <!-- Первая строка: Тип и Мин. кол-во -->
+                                        <TextBlock Grid.Row="1" Grid.Column="0" Text="Тип:" FontStyle="Italic"/>
+                                        <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding TypeIngredients}" />
+                                        <TextBlock Grid.Row="1" Grid.Column="2" Text="Мин. количество:" FontStyle="Italic"/>
+                                        <TextBlock Grid.Row="1" Grid.Column="3" Text="{Binding MinimKolich}" />
+
+                                        <!-- Вторая строка: Кол-во на складе и в упаковке -->
+                                        <TextBlock Grid.Row="2" Grid.Column="0" Text="В наличии:" FontStyle="Italic"/>
+                                        <TextBlock Grid.Row="2" Grid.Column="1">
+                                            <TextBlock.Text>
+                                                <MultiBinding StringFormat="{}{0:N2} {1}">
+                                                    <Binding Path="KolichSklad"/>
+                                                    <Binding Path="EdinIzmereniya"/>
+                                                </MultiBinding>
+                                            </TextBlock.Text>
+                                        </TextBlock>
+                                        <TextBlock Grid.Row="2" Grid.Column="2" Text="Упаковка:" FontStyle="Italic"/>
+                                        <TextBlock Grid.Row="2" Grid.Column="3" Text="{Binding KolichUpakovka}" />
+
+                                        <!-- Третья строка: Цена и мин. партия -->
+                                        <TextBlock Grid.Row="3" Grid.Column="0" Text="Цена:" FontStyle="Italic"/>
+                                        <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding CostForOne}" />
+                                        <TextBlock Grid.Row="3" Grid.Column="2" Text="Мин. партия:" FontStyle="Italic"/>
+                                        <TextBlock Grid.Row="3" Grid.Column="3" Text="{Binding MinOrderCost}" />
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                </Grid>
             </Border>
 
-            <GridSplitter Grid.Column="1" Width="6" Background="{StaticResource AccentBrush}" IsEnabled="False"/>
+        <GridSplitter Grid.Column="1" Width="6" Background="{StaticResource AccentBrush}" IsEnabled="False"/>
 
             <!-- Правая часть - Редактирование -->
             <Border Grid.Column="2"
@@ -93,7 +138,15 @@
                     <TextBox Text="{Binding SelectedIngredient.IngredientsName, UpdateSourceTrigger=PropertyChanged}"/>
 
                     <Label Content="Тип:"/>
-                    <TextBox Text="{Binding SelectedIngredient.TypeIngredients, UpdateSourceTrigger=PropertyChanged}"/>
+                    <ComboBox ItemsSource="{Binding IngredientTypes}"
+                              SelectedItem="{Binding SelectedIngredient.TypeIngredients, UpdateSourceTrigger=PropertyChanged}"
+                              IsEditable="True">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding}"/>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
 
                     <Label Content="Ед. измерения:"/>
                     <TextBox Text="{Binding SelectedIngredient.EdinIzmereniya, UpdateSourceTrigger=PropertyChanged}"/>
@@ -128,7 +181,7 @@
                                 FontWeight="Bold"
                                 Padding="20,10"
                                 MinWidth="180"/>
-                        
+
                         <Button Content="Удалить" Command="{Binding DeleteCommand}" 
                                 Background="#D32F2F"
                                 Foreground="White"
@@ -143,7 +196,7 @@
 
         <StatusBar VerticalAlignment="Bottom" Background="{StaticResource AccentBrush}">
             <StatusBarItem>
-                <TextBlock Text="Кофейный Рай © 2023" Foreground="{StaticResource LightTextBrush}"/>
+                <TextBlock Text="Кофейный Рай © 2025" Foreground="{StaticResource LightTextBrush}"/>
             </StatusBarItem>
             <StatusBarItem HorizontalAlignment="Right">
                 <StackPanel Orientation="Horizontal">

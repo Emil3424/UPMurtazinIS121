@@ -14,11 +14,24 @@ namespace UPMurtazinIS121.ViewModel
     public class IngredientsViewModel : INotifyPropertyChanged
     {
         private readonly CoffeeDBMurtazinEntities2 _context;
-        private Ingredients _selectedIngredient;
+        private IngredientModel _selectedIngredient;
 
-        public ObservableCollection<Ingredients> IngredientsList { get; } = [];
+        public ObservableCollection<IngredientModel> IngredientsList { get; } = [];
+        private string _selectedFilterType;
+        public ObservableCollection<string> IngredientTypes { get; } = new ObservableCollection<string>();
+        public ObservableCollection<IngredientModel> FilteredIngredientsList { get; } = new ObservableCollection<IngredientModel>();
 
-        public Ingredients SelectedIngredient
+        public string SelectedFilterType
+        {
+            get => _selectedFilterType;
+            set
+            {
+                _selectedFilterType = value;
+                OnPropertyChanged();
+                ApplyFilter();
+            }
+        }
+        public IngredientModel SelectedIngredient
         {
             get => _selectedIngredient;
             set
@@ -48,10 +61,23 @@ namespace UPMurtazinIS121.ViewModel
             try
             {
                 _context.Ingredients.Load();
+                IngredientsList.Clear();
+                IngredientTypes.Clear();
+                IngredientTypes.Add("Все типы");
+
                 foreach (var ingredient in _context.Ingredients.Local)
                 {
-                    IngredientsList.Add(ingredient);
+                    var vm = new IngredientModel(ingredient);
+                    IngredientsList.Add(vm);
+
+                    if (!string.IsNullOrEmpty(vm.TypeIngredients))
+                    {
+                        if (!IngredientTypes.Contains(vm.TypeIngredients))
+                            IngredientTypes.Add(vm.TypeIngredients);
+                    }
                 }
+
+                ApplyFilter();
             }
             catch (Exception ex)
             {
@@ -59,6 +85,27 @@ namespace UPMurtazinIS121.ViewModel
                     MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
+        private void ApplyFilter()
+        {
+            FilteredIngredientsList.Clear();
+
+            if (string.IsNullOrEmpty(SelectedFilterType))
+            {
+                foreach (var item in IngredientsList)
+                    FilteredIngredientsList.Add(item);
+            }
+            else if (SelectedFilterType == "Все типы")
+            {
+                foreach (var item in IngredientsList)
+                    FilteredIngredientsList.Add(item);
+            }
+            else
+            {
+                foreach (var item in IngredientsList.Where(i => i.TypeIngredients == SelectedFilterType))
+                    FilteredIngredientsList.Add(item);
+            }
+        }
+
 
         public bool HasChanges()
         {
@@ -88,7 +135,7 @@ namespace UPMurtazinIS121.ViewModel
         {
             var newIngredient = new Ingredients
             {
-                IngredientsName = "Новый ингредиент " + _context.Ingredients.Count(),
+                IngredientsName = "Новый ингредиент",
                 TypeIngredients = "Тип",
                 EdinIzmereniya = "кг",
                 KolichSklad = 0,
@@ -98,8 +145,9 @@ namespace UPMurtazinIS121.ViewModel
                 ExpirationDate = DateTime.Now.AddMonths(6)
             };
 
-            IngredientsList.Add(newIngredient);
-            SelectedIngredient = newIngredient;
+            var wrapper = new IngredientModel(newIngredient);
+            IngredientsList.Add(wrapper);
+            SelectedIngredient = wrapper;
             _context.Ingredients.Add(newIngredient);
         }
 
@@ -114,22 +162,10 @@ namespace UPMurtazinIS121.ViewModel
 
             try
             {
-                if (_context.Entry(SelectedIngredient).State == EntityState.Detached)
-                {
-                    var ingredientToDelete = _context.Ingredients.Find(SelectedIngredient.IngredientID);
-                    if (ingredientToDelete != null)
-                    {
-                        _context.Ingredients.Remove(ingredientToDelete);
-                    }
-                }
-                else
-                {
-                    _context.Ingredients.Remove(SelectedIngredient);
-                }
-
-                _context.SaveChanges();
-
+                var model = SelectedIngredient.GetModel();
+                _context.Ingredients.Remove(model);
                 IngredientsList.Remove(SelectedIngredient);
+                _context.SaveChanges();
 
                 SelectedIngredient = IngredientsList.FirstOrDefault();
             }

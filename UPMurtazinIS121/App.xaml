@@ -5,9 +5,24 @@
              StartupUri="MainWindow.xaml">
     <Application.Resources>
         
+        <Style TargetType="ComboBox" BasedOn="{StaticResource {x:Type ComboBox}}">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderBrush" Value="#D7CCC8"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Margin" Value="0,0,0,10"/>
+            <Setter Property="Padding" Value="5"/>
+            <Setter Property="FontFamily" Value="Roboto"/>
+            <Style.Triggers>
+                <Trigger Property="IsFocused" Value="True">
+                    <Setter Property="BorderBrush" Value="#5D4037"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
         <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="Padding" Value="5"/>
+            <Setter Property="FontSize" Value="14"/>
             <Setter Property="Margin" Value="0,0,0,10"/>
             <Setter Property="FontFamily" Value="Roboto"/>
             <Setter Property="Template">
@@ -60,6 +75,7 @@
 
         <Style TargetType="TextBlock">
             <Setter Property="Margin" Value="5"/>
+            <Setter Property="FontSize" Value="14"/>
             <Setter Property="FontFamily" Value="Roboto"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
         </Style>
