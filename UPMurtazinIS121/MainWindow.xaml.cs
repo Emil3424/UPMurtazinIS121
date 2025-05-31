@@ -10,5 +10,13 @@ namespace UPMurtazinIS121
             InitializeComponent();
             DataContext = new IngredientsViewModel();
         }
+        private void SuppliersButton_Click(object sender, RoutedEventArgs e)
+        {
+            var suppliersWindow = new SuppliersWindow
+            {
+                Owner = this
+            };
+            suppliersWindow.ShowDialog();
+        }
     }
 }

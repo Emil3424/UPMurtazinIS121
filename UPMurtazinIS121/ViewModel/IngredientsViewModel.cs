@@ -8,6 +8,7 @@ using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Input;
 using UPMurtazinIS121.Model;
+using UPMurtazinIS121.Validations;
 
 namespace UPMurtazinIS121.ViewModel
 {
@@ -18,9 +19,13 @@ namespace UPMurtazinIS121.ViewModel
 
         public ObservableCollection<IngredientModel> IngredientsList { get; } = [];
         private string _selectedFilterType;
-        public ObservableCollection<string> IngredientTypes { get; } = new ObservableCollection<string>();
-        public ObservableCollection<IngredientModel> FilteredIngredientsList { get; } = new ObservableCollection<IngredientModel>();
+        public ObservableCollection<string> IngredientTypes { get; } = [];
+        public ObservableCollection<IngredientModel> FilteredIngredientsList { get; } = [];
 
+        public ObservableCollection<string> MeasurementUnits { get; } =
+        [
+            "шт", "кг", "г"
+        ];
         public string SelectedFilterType
         {
             get => _selectedFilterType;
@@ -54,6 +59,9 @@ namespace UPMurtazinIS121.ViewModel
             SaveCommand = new RelayCommand(SaveChanges);
             AddNewCommand = new RelayCommand(AddNewIngredient);
             DeleteCommand = new RelayCommand(DeleteIngredient);
+
+            SortAscCommand = new RelayCommand(_ => SortIngredients(true));
+            SortDescCommand = new RelayCommand(_ => SortIngredients(false));
         }
 
         private void LoadData()
@@ -81,8 +89,8 @@ namespace UPMurtazinIS121.ViewModel
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Ошибка загрузки: {ex.Message}", "Ошибка",
-                    MessageBoxButton.OK, MessageBoxImage.Error);
+
+                Console.WriteLine($"Ошибка загрузки: {ex.Message}", " Ошибка");
             }
         }
         private void ApplyFilter()
@@ -174,6 +182,18 @@ namespace UPMurtazinIS121.ViewModel
                 MessageBox.Show($"Ошибка удаления: {ex.Message}", "Ошибка",
                     MessageBoxButton.OK, MessageBoxImage.Error);
             }
+        }
+        public ICommand SortAscCommand { get; }
+        public ICommand SortDescCommand { get; }
+        private void SortIngredients(bool ascending)
+        {
+            var sorted = ascending
+                ? FilteredIngredientsList.OrderBy(s => s.IngredientsName).ToList()
+                : FilteredIngredientsList.OrderByDescending(s => s.IngredientsName).ToList();
+
+            FilteredIngredientsList.Clear();
+            foreach (var s in sorted)
+                FilteredIngredientsList.Add(s);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

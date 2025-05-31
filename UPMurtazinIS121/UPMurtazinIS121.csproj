@@ -36,7 +36,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>free-icon-cafe-4736449.ico</ApplicationIcon>
+    <ApplicationIcon>coffee_icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="EntityFramework, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
@@ -66,6 +66,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="BoolToBrushConverter.cs" />
     <Compile Include="Model\EdIzmereniya.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
@@ -118,6 +119,7 @@
     <Compile Include="Model\Recipes.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
+    <Compile Include="Model\SupplierModel.cs" />
     <Compile Include="Model\Suppliers.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
@@ -136,9 +138,14 @@
     <Compile Include="Model\WorkSchedules.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
+    <Compile Include="SuppliersWindow.xaml.cs">
+      <DependentUpon>SuppliersWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Validations\TextBoxInputBehavior.cs" />
     <Compile Include="ViewModel\IngredientsViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="ViewModel\RelayCommand.cs" />
+    <Compile Include="ViewModel\SuppliersViewModel.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -151,6 +158,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="SuppliersWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -174,6 +185,8 @@
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>Model1.Designer.cs</LastGenOutput>
     </EntityDeploy>
+    <Resource Include="Fonts\Roboto-Italic-VariableFont_wdth,wght.ttf" />
+    <Resource Include="Fonts\Roboto-VariableFont_wdth,wght.ttf" />
     <None Include="Model\Model1.edmx.diagram">
       <DependentUpon>Model1.edmx</DependentUpon>
     </None>
@@ -187,18 +200,12 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="49164.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="free-icon-cafe-4736449.ico" />
-  </ItemGroup>
-  <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
-    <Folder Include="MVVM\" />
-  </ItemGroup>
-  <ItemGroup>
+    <Resource Include="coffee_icon.ico" />
+    <Resource Include="logo_coffee_paradise.png" />
     <Content Include="Model\Model1.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>Model1.edmx</DependentUpon>

@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace UPMurtazinIS121.Model
 {
@@ -171,6 +167,33 @@ namespace UPMurtazinIS121.Model
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+        public string this[string columnName]
+        {
+            get
+            {
+                switch (columnName)
+                {
+                    case nameof(IngredientsName):
+                        if (string.IsNullOrWhiteSpace(IngredientsName))
+                            return "Название обязательно";
+                        break;
+                    case nameof(KolichSklad):
+                        if (KolichSklad < 0) return "Не отрицательное";
+                        break;
+                    case nameof(MinimKolich):
+                        if (MinimKolich < 0) return "Не отрицательное";
+                        break;
+                    case nameof(CostForOne):
+                        if (CostForOne < 0) return "Не отрицательное";
+                        break;
+                    case nameof(ExpirationDate):
+                        if (ExpirationDate < DateTime.Today)
+                            return "Дата не в прошлом";
+                        break;
+                }
+                return null;
+            }
         }
     }
 }
