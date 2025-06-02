@@ -65,75 +65,78 @@
     </ApplicationDefinition>
     <Compile Include="BoolToBrushConverter.cs" />
     <Compile Include="Model\EdIzmereniya.cs">
-      <DependentUpon>Model2.tt</DependentUpon>
+      <DependentUpon>Model7.tt</DependentUpon>
     </Compile>
     <Compile Include="Model\Employees.cs">
-      <DependentUpon>Model2.tt</DependentUpon>
+      <DependentUpon>Model7.tt</DependentUpon>
     </Compile>
     <Compile Include="Model\IngredientModel.cs" />
     <Compile Include="Model\Ingredients.cs">
-      <DependentUpon>Model2.tt</DependentUpon>
+      <DependentUpon>Model7.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\IngredientSupplier.cs">
+      <DependentUpon>Model7.tt</DependentUpon>
     </Compile>
     <Compile Include="Model\InventoryAlerts.cs">
-      <DependentUpon>Model2.tt</DependentUpon>
+      <DependentUpon>Model7.tt</DependentUpon>
     </Compile>
     <Compile Include="Model\InventoryTransactions.cs">
-      <DependentUpon>Model2.tt</DependentUpon>
+      <DependentUpon>Model7.tt</DependentUpon>
     </Compile>
     <Compile Include="Model\MenuCategories.cs">
-      <DependentUpon>Model2.tt</DependentUpon>
+      <DependentUpon>Model7.tt</DependentUpon>
     </Compile>
     <Compile Include="Model\MenuItems.cs">
-      <DependentUpon>Model2.tt</DependentUpon>
+      <DependentUpon>Model7.tt</DependentUpon>
     </Compile>
-    <Compile Include="Model\Model2.Context.cs">
+    <Compile Include="Model\Model7.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>Model2.Context.tt</DependentUpon>
+      <DependentUpon>Model7.Context.tt</DependentUpon>
     </Compile>
-    <Compile Include="Model\Model2.cs">
+    <Compile Include="Model\Model7.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>Model2.tt</DependentUpon>
+      <DependentUpon>Model7.tt</DependentUpon>
     </Compile>
-    <Compile Include="Model\Model2.Designer.cs">
+    <Compile Include="Model\Model7.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>Model2.edmx</DependentUpon>
+      <DependentUpon>Model7.edmx</DependentUpon>
     </Compile>
     <Compile Include="Model\OrderDetails.cs">
-      <DependentUpon>Model2.tt</DependentUpon>
+      <DependentUpon>Model7.tt</DependentUpon>
     </Compile>
     <Compile Include="Model\Orders.cs">
-      <DependentUpon>Model2.tt</DependentUpon>
+      <DependentUpon>Model7.tt</DependentUpon>
     </Compile>
     <Compile Include="Model\OrderStatuses.cs">
-      <DependentUpon>Model2.tt</DependentUpon>
+      <DependentUpon>Model7.tt</DependentUpon>
     </Compile>
     <Compile Include="Model\PositionsEmployee.cs">
-      <DependentUpon>Model2.tt</DependentUpon>
+      <DependentUpon>Model7.tt</DependentUpon>
     </Compile>
     <Compile Include="Model\Recipes.cs">
-      <DependentUpon>Model2.tt</DependentUpon>
+      <DependentUpon>Model7.tt</DependentUpon>
     </Compile>
     <Compile Include="Model\SupplierModel.cs" />
     <Compile Include="Model\Suppliers.cs">
-      <DependentUpon>Model2.tt</DependentUpon>
+      <DependentUpon>Model7.tt</DependentUpon>
     </Compile>
     <Compile Include="Model\sysdiagrams.cs">
-      <DependentUpon>Model2.tt</DependentUpon>
+      <DependentUpon>Model7.tt</DependentUpon>
     </Compile>
     <Compile Include="Model\TransactionType.cs">
-      <DependentUpon>Model2.tt</DependentUpon>
+      <DependentUpon>Model7.tt</DependentUpon>
     </Compile>
     <Compile Include="Model\TypeIngredients.cs">
-      <DependentUpon>Model2.tt</DependentUpon>
+      <DependentUpon>Model7.tt</DependentUpon>
     </Compile>
     <Compile Include="Model\TypeSupplier.cs">
-      <DependentUpon>Model2.tt</DependentUpon>
+      <DependentUpon>Model7.tt</DependentUpon>
     </Compile>
     <Compile Include="Model\WorkSchedules.cs">
-      <DependentUpon>Model2.tt</DependentUpon>
+      <DependentUpon>Model7.tt</DependentUpon>
     </Compile>
     <Compile Include="SuppliersWindow.xaml.cs">
       <DependentUpon>SuppliersWindow.xaml</DependentUpon>
@@ -179,12 +182,12 @@
     </EmbeddedResource>
     <Resource Include="Fonts\Roboto-Italic-VariableFont_wdth,wght.ttf" />
     <Resource Include="Fonts\Roboto-VariableFont_wdth,wght.ttf" />
-    <EntityDeploy Include="Model\Model2.edmx">
+    <EntityDeploy Include="Model\Model7.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>Model2.Designer.cs</LastGenOutput>
+      <LastGenOutput>Model7.Designer.cs</LastGenOutput>
     </EntityDeploy>
-    <None Include="Model\Model2.edmx.diagram">
-      <DependentUpon>Model2.edmx</DependentUpon>
+    <None Include="Model\Model7.edmx.diagram">
+      <DependentUpon>Model7.edmx</DependentUpon>
     </None>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -198,18 +201,6 @@
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Model\Model2.Context.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>Model2.edmx</DependentUpon>
-      <LastGenOutput>Model2.Context.cs</LastGenOutput>
-    </Content>
-    <Content Include="Model\Model2.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>Model2.edmx</DependentUpon>
-      <LastGenOutput>Model2.cs</LastGenOutput>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="coffee_icon.ico" />
     <Resource Include="logo_coffee_paradise.png" />
   </ItemGroup>
@@ -220,6 +211,18 @@
     <PackageReference Include="EntityFramework.ru">
       <Version>6.2.0</Version>
     </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Model\Model7.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>Model7.edmx</DependentUpon>
+      <LastGenOutput>Model7.Context.cs</LastGenOutput>
+    </Content>
+    <Content Include="Model\Model7.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>Model7.edmx</DependentUpon>
+      <LastGenOutput>Model7.cs</LastGenOutput>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

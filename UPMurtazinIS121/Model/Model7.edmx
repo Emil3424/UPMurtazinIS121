@@ -39,11 +39,11 @@
         </EntityType>
         <EntityType Name="IngredientSupplier">
           <Key>
-            <PropertyRef Name="IngredientID" />
-            <PropertyRef Name="SupplierID" />
+            <PropertyRef Name="IDIngredientSupplier" />
           </Key>
           <Property Name="IngredientID" Type="int" Nullable="false" />
           <Property Name="SupplierID" Type="int" Nullable="false" />
+          <Property Name="IDIngredientSupplier" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
         </EntityType>
         <EntityType Name="InventoryAlerts">
           <Key>
@@ -66,8 +66,7 @@
           <Property Name="TransactionType" Type="nvarchar" MaxLength="20" Nullable="false" />
           <Property Name="EmployeeID" Type="int" Nullable="false" />
           <Property Name="ExpirationDate" Type="date" />
-          <Property Name="IngredientID" Type="int" />
-          <Property Name="SupplierID" Type="int" />
+          <Property Name="IDSIngredienupplier" Type="int" />
         </EntityType>
         <EntityType Name="MenuCategories">
           <Key>
@@ -320,27 +319,15 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_InventoryTransactions_Ingredients">
-          <End Role="Ingredients" Type="Self.Ingredients" Multiplicity="0..1" />
+        <Association Name="FK_InventoryTransactions_IngredientSupplier">
+          <End Role="IngredientSupplier" Type="Self.IngredientSupplier" Multiplicity="0..1" />
           <End Role="InventoryTransactions" Type="Self.InventoryTransactions" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="Ingredients">
-              <PropertyRef Name="IngredientID" />
+            <Principal Role="IngredientSupplier">
+              <PropertyRef Name="IDIngredientSupplier" />
             </Principal>
             <Dependent Role="InventoryTransactions">
-              <PropertyRef Name="IngredientID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_InventoryTransactions_Suppliers">
-          <End Role="Suppliers" Type="Self.Suppliers" Multiplicity="0..1" />
-          <End Role="InventoryTransactions" Type="Self.InventoryTransactions" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Suppliers">
-              <PropertyRef Name="IDSuppliers" />
-            </Principal>
-            <Dependent Role="InventoryTransactions">
-              <PropertyRef Name="SupplierID" />
+              <PropertyRef Name="IDSIngredienupplier" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -492,12 +479,8 @@
             <End Role="Employees" EntitySet="Employees" />
             <End Role="InventoryTransactions" EntitySet="InventoryTransactions" />
           </AssociationSet>
-          <AssociationSet Name="FK_InventoryTransactions_Ingredients" Association="Self.FK_InventoryTransactions_Ingredients">
-            <End Role="Ingredients" EntitySet="Ingredients" />
-            <End Role="InventoryTransactions" EntitySet="InventoryTransactions" />
-          </AssociationSet>
-          <AssociationSet Name="FK_InventoryTransactions_Suppliers" Association="Self.FK_InventoryTransactions_Suppliers">
-            <End Role="Suppliers" EntitySet="Suppliers" />
+          <AssociationSet Name="FK_InventoryTransactions_IngredientSupplier" Association="Self.FK_InventoryTransactions_IngredientSupplier">
+            <End Role="IngredientSupplier" EntitySet="IngredientSupplier" />
             <End Role="InventoryTransactions" EntitySet="InventoryTransactions" />
           </AssociationSet>
           <AssociationSet Name="FK_MenuItems_MenuCategories" Association="Self.FK_MenuItems_MenuCategories">
@@ -573,10 +556,20 @@
           <Property Name="IngredientID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <NavigationProperty Name="EdIzmereniya" Relationship="Self.FK__Ingredien__EdinI__29572725" FromRole="Ingredients" ToRole="EdIzmereniya" />
           <NavigationProperty Name="TypeIngredients1" Relationship="Self.FK__Ingredien__TypeI__286302EC" FromRole="Ingredients" ToRole="TypeIngredients" />
+          <NavigationProperty Name="IngredientSupplier" Relationship="Self.FK_IngredientSupplier_Ingredients" FromRole="Ingredients" ToRole="IngredientSupplier" />
           <NavigationProperty Name="InventoryAlerts" Relationship="Self.FK_InventoryAlerts_Ingredients" FromRole="Ingredients" ToRole="InventoryAlerts" />
-          <NavigationProperty Name="InventoryTransactions" Relationship="Self.FK_InventoryTransactions_Ingredients" FromRole="Ingredients" ToRole="InventoryTransactions" />
           <NavigationProperty Name="Recipes" Relationship="Self.FK_Recipes_Ingredients" FromRole="Ingredients" ToRole="Recipes" />
-          <NavigationProperty Name="Suppliers" Relationship="Self.IngredientSupplier" FromRole="Ingredients" ToRole="Suppliers" />
+        </EntityType>
+        <EntityType Name="IngredientSupplier">
+          <Key>
+            <PropertyRef Name="IDIngredientSupplier" />
+          </Key>
+          <Property Name="IngredientID" Type="Int32" Nullable="false" />
+          <Property Name="SupplierID" Type="Int32" Nullable="false" />
+          <Property Name="IDIngredientSupplier" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <NavigationProperty Name="Ingredients" Relationship="Self.FK_IngredientSupplier_Ingredients" FromRole="IngredientSupplier" ToRole="Ingredients" />
+          <NavigationProperty Name="Suppliers" Relationship="Self.FK_IngredientSupplier_Suppliers" FromRole="IngredientSupplier" ToRole="Suppliers" />
+          <NavigationProperty Name="InventoryTransactions" Relationship="Self.FK_InventoryTransactions_IngredientSupplier" FromRole="IngredientSupplier" ToRole="InventoryTransactions" />
         </EntityType>
         <EntityType Name="InventoryAlerts">
           <Key>
@@ -601,12 +594,10 @@
           <Property Name="TransactionType" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="EmployeeID" Type="Int32" Nullable="false" />
           <Property Name="ExpirationDate" Type="DateTime" Precision="0" />
-          <Property Name="IngredientID" Type="Int32" />
-          <Property Name="SupplierID" Type="Int32" />
+          <Property Name="IDSIngredienupplier" Type="Int32" />
           <NavigationProperty Name="Employees" Relationship="Self.FK_InventoryTransactions_Employees" FromRole="InventoryTransactions" ToRole="Employees" />
-          <NavigationProperty Name="Ingredients" Relationship="Self.FK_InventoryTransactions_Ingredients" FromRole="InventoryTransactions" ToRole="Ingredients" />
+          <NavigationProperty Name="IngredientSupplier" Relationship="Self.FK_InventoryTransactions_IngredientSupplier" FromRole="InventoryTransactions" ToRole="IngredientSupplier" />
           <NavigationProperty Name="TransactionType1" Relationship="Self.FK__Inventory__Trans__5DCAEF64" FromRole="InventoryTransactions" ToRole="TransactionType" />
-          <NavigationProperty Name="Suppliers" Relationship="Self.FK_InventoryTransactions_Suppliers" FromRole="InventoryTransactions" ToRole="Suppliers" />
         </EntityType>
         <EntityType Name="MenuCategories">
           <Key>
@@ -701,9 +692,8 @@
           <Property Name="Logo" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="RatingReliability" Type="Decimal" Precision="18" Scale="2" />
           <Property Name="IDSuppliers" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <NavigationProperty Name="InventoryTransactions" Relationship="Self.FK_InventoryTransactions_Suppliers" FromRole="Suppliers" ToRole="InventoryTransactions" />
+          <NavigationProperty Name="IngredientSupplier" Relationship="Self.FK_IngredientSupplier_Suppliers" FromRole="Suppliers" ToRole="IngredientSupplier" />
           <NavigationProperty Name="TypeSupplier" Relationship="Self.FK__Suppliers__Type__2E1BDC42" FromRole="Suppliers" ToRole="TypeSupplier" />
-          <NavigationProperty Name="Ingredients" Relationship="Self.IngredientSupplier" FromRole="Suppliers" ToRole="Ingredients" />
         </EntityType>
         <EntityType Name="sysdiagrams">
           <Key>
@@ -831,6 +821,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_IngredientSupplier_Ingredients">
+          <End Role="Ingredients" Type="Self.Ingredients" Multiplicity="1" />
+          <End Role="IngredientSupplier" Type="Self.IngredientSupplier" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Ingredients">
+              <PropertyRef Name="IngredientID" />
+            </Principal>
+            <Dependent Role="IngredientSupplier">
+              <PropertyRef Name="IngredientID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_InventoryAlerts_Ingredients">
           <End Role="Ingredients" Type="Self.Ingredients" Multiplicity="0..1" />
           <End Role="InventoryAlerts" Type="Self.InventoryAlerts" Multiplicity="*" />
@@ -839,18 +841,6 @@
               <PropertyRef Name="IngredientID" />
             </Principal>
             <Dependent Role="InventoryAlerts">
-              <PropertyRef Name="IngredientID" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_InventoryTransactions_Ingredients">
-          <End Role="Ingredients" Type="Self.Ingredients" Multiplicity="0..1" />
-          <End Role="InventoryTransactions" Type="Self.InventoryTransactions" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Ingredients">
-              <PropertyRef Name="IngredientID" />
-            </Principal>
-            <Dependent Role="InventoryTransactions">
               <PropertyRef Name="IngredientID" />
             </Dependent>
           </ReferentialConstraint>
@@ -867,6 +857,30 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_IngredientSupplier_Suppliers">
+          <End Role="Suppliers" Type="Self.Suppliers" Multiplicity="1" />
+          <End Role="IngredientSupplier" Type="Self.IngredientSupplier" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Suppliers">
+              <PropertyRef Name="IDSuppliers" />
+            </Principal>
+            <Dependent Role="IngredientSupplier">
+              <PropertyRef Name="SupplierID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_InventoryTransactions_IngredientSupplier">
+          <End Role="IngredientSupplier" Type="Self.IngredientSupplier" Multiplicity="0..1" />
+          <End Role="InventoryTransactions" Type="Self.InventoryTransactions" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="IngredientSupplier">
+              <PropertyRef Name="IDIngredientSupplier" />
+            </Principal>
+            <Dependent Role="InventoryTransactions">
+              <PropertyRef Name="IDSIngredienupplier" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK__Inventory__Trans__5DCAEF64">
           <End Role="TransactionType" Type="Self.TransactionType" Multiplicity="1" />
           <End Role="InventoryTransactions" Type="Self.InventoryTransactions" Multiplicity="*" />
@@ -876,18 +890,6 @@
             </Principal>
             <Dependent Role="InventoryTransactions">
               <PropertyRef Name="TransactionType" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_InventoryTransactions_Suppliers">
-          <End Role="Suppliers" Type="Self.Suppliers" Multiplicity="0..1" />
-          <End Role="InventoryTransactions" Type="Self.InventoryTransactions" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Suppliers">
-              <PropertyRef Name="IDSuppliers" />
-            </Principal>
-            <Dependent Role="InventoryTransactions">
-              <PropertyRef Name="SupplierID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -963,14 +965,11 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="IngredientSupplier">
-          <End Role="Ingredients" Type="Self.Ingredients" Multiplicity="*" />
-          <End Role="Suppliers" Type="Self.Suppliers" Multiplicity="*" />
-        </Association>
         <EntityContainer Name="CoffeeDBMurtazinEntities2" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="EdIzmereniya" EntityType="Self.EdIzmereniya" />
           <EntitySet Name="Employees" EntityType="Self.Employees" />
           <EntitySet Name="Ingredients" EntityType="Self.Ingredients" />
+          <EntitySet Name="IngredientSupplier" EntityType="Self.IngredientSupplier" />
           <EntitySet Name="InventoryAlerts" EntityType="Self.InventoryAlerts" />
           <EntitySet Name="InventoryTransactions" EntityType="Self.InventoryTransactions" />
           <EntitySet Name="MenuCategories" EntityType="Self.MenuCategories" />
@@ -1014,24 +1013,28 @@
             <End Role="TypeIngredients" EntitySet="TypeIngredients" />
             <End Role="Ingredients" EntitySet="Ingredients" />
           </AssociationSet>
+          <AssociationSet Name="FK_IngredientSupplier_Ingredients" Association="Self.FK_IngredientSupplier_Ingredients">
+            <End Role="Ingredients" EntitySet="Ingredients" />
+            <End Role="IngredientSupplier" EntitySet="IngredientSupplier" />
+          </AssociationSet>
           <AssociationSet Name="FK_InventoryAlerts_Ingredients" Association="Self.FK_InventoryAlerts_Ingredients">
             <End Role="Ingredients" EntitySet="Ingredients" />
             <End Role="InventoryAlerts" EntitySet="InventoryAlerts" />
-          </AssociationSet>
-          <AssociationSet Name="FK_InventoryTransactions_Ingredients" Association="Self.FK_InventoryTransactions_Ingredients">
-            <End Role="Ingredients" EntitySet="Ingredients" />
-            <End Role="InventoryTransactions" EntitySet="InventoryTransactions" />
           </AssociationSet>
           <AssociationSet Name="FK_Recipes_Ingredients" Association="Self.FK_Recipes_Ingredients">
             <End Role="Ingredients" EntitySet="Ingredients" />
             <End Role="Recipes" EntitySet="Recipes" />
           </AssociationSet>
-          <AssociationSet Name="FK__Inventory__Trans__5DCAEF64" Association="Self.FK__Inventory__Trans__5DCAEF64">
-            <End Role="TransactionType" EntitySet="TransactionType" />
+          <AssociationSet Name="FK_IngredientSupplier_Suppliers" Association="Self.FK_IngredientSupplier_Suppliers">
+            <End Role="Suppliers" EntitySet="Suppliers" />
+            <End Role="IngredientSupplier" EntitySet="IngredientSupplier" />
+          </AssociationSet>
+          <AssociationSet Name="FK_InventoryTransactions_IngredientSupplier" Association="Self.FK_InventoryTransactions_IngredientSupplier">
+            <End Role="IngredientSupplier" EntitySet="IngredientSupplier" />
             <End Role="InventoryTransactions" EntitySet="InventoryTransactions" />
           </AssociationSet>
-          <AssociationSet Name="FK_InventoryTransactions_Suppliers" Association="Self.FK_InventoryTransactions_Suppliers">
-            <End Role="Suppliers" EntitySet="Suppliers" />
+          <AssociationSet Name="FK__Inventory__Trans__5DCAEF64" Association="Self.FK__Inventory__Trans__5DCAEF64">
+            <End Role="TransactionType" EntitySet="TransactionType" />
             <End Role="InventoryTransactions" EntitySet="InventoryTransactions" />
           </AssociationSet>
           <AssociationSet Name="FK_MenuItems_MenuCategories" Association="Self.FK_MenuItems_MenuCategories">
@@ -1056,10 +1059,6 @@
           </AssociationSet>
           <AssociationSet Name="FK__Suppliers__Type__2E1BDC42" Association="Self.FK__Suppliers__Type__2E1BDC42">
             <End Role="TypeSupplier" EntitySet="TypeSupplier" />
-            <End Role="Suppliers" EntitySet="Suppliers" />
-          </AssociationSet>
-          <AssociationSet Name="IngredientSupplier" Association="Self.IngredientSupplier">
-            <End Role="Ingredients" EntitySet="Ingredients" />
             <End Role="Suppliers" EntitySet="Suppliers" />
           </AssociationSet>
         </EntityContainer>
@@ -1104,6 +1103,15 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="IngredientSupplier">
+            <EntityTypeMapping TypeName="CoffeeDBMurtazinModel.IngredientSupplier">
+              <MappingFragment StoreEntitySet="IngredientSupplier">
+                <ScalarProperty Name="IngredientID" ColumnName="IngredientID" />
+                <ScalarProperty Name="SupplierID" ColumnName="SupplierID" />
+                <ScalarProperty Name="IDIngredientSupplier" ColumnName="IDIngredientSupplier" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="InventoryAlerts">
             <EntityTypeMapping TypeName="CoffeeDBMurtazinModel.InventoryAlerts">
               <MappingFragment StoreEntitySet="InventoryAlerts">
@@ -1125,8 +1133,7 @@
                 <ScalarProperty Name="TransactionType" ColumnName="TransactionType" />
                 <ScalarProperty Name="EmployeeID" ColumnName="EmployeeID" />
                 <ScalarProperty Name="ExpirationDate" ColumnName="ExpirationDate" />
-                <ScalarProperty Name="IngredientID" ColumnName="IngredientID" />
-                <ScalarProperty Name="SupplierID" ColumnName="SupplierID" />
+                <ScalarProperty Name="IDSIngredienupplier" ColumnName="IDSIngredienupplier" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -1262,14 +1269,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <AssociationSetMapping Name="IngredientSupplier" TypeName="CoffeeDBMurtazinModel.IngredientSupplier" StoreEntitySet="IngredientSupplier">
-            <EndProperty Name="Ingredients">
-              <ScalarProperty Name="IngredientID" ColumnName="IngredientID" />
-            </EndProperty>
-            <EndProperty Name="Suppliers">
-              <ScalarProperty Name="IDSuppliers" ColumnName="SupplierID" />
-            </EndProperty>
-          </AssociationSetMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

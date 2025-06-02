@@ -28,6 +28,7 @@ namespace UPMurtazinIS121.Model
         public DbSet<EdIzmereniya> EdIzmereniya { get; set; }
         public DbSet<Employees> Employees { get; set; }
         public DbSet<Ingredients> Ingredients { get; set; }
+        public DbSet<IngredientSupplier> IngredientSupplier { get; set; }
         public DbSet<InventoryAlerts> InventoryAlerts { get; set; }
         public DbSet<InventoryTransactions> InventoryTransactions { get; set; }
         public DbSet<MenuCategories> MenuCategories { get; set; }
