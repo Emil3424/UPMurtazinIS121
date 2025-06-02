@@ -15,17 +15,15 @@ namespace UPMurtazinIS121.Model
     public partial class InventoryTransactions
     {
         public int TransactionID { get; set; }
-        public string IngredientsName { get; set; }
         public System.DateTime TransactionDate { get; set; }
         public decimal Quantity { get; set; }
         public string TransactionType { get; set; }
         public int EmployeeID { get; set; }
-        public string SupplierName { get; set; }
         public Nullable<System.DateTime> ExpirationDate { get; set; }
+        public Nullable<int> IDSIngredienupplier { get; set; }
     
         public virtual Employees Employees { get; set; }
-        public virtual Ingredients Ingredients { get; set; }
+        public virtual IngredientSupplier IngredientSupplier { get; set; }
         public virtual TransactionType TransactionType1 { get; set; }
-        public virtual Suppliers Suppliers { get; set; }
     }
 }

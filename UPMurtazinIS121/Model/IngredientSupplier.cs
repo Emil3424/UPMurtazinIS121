@@ -12,16 +12,19 @@ namespace UPMurtazinIS121.Model
     using System;
     using System.Collections.Generic;
     
-    public partial class InventoryAlerts
+    public partial class IngredientSupplier
     {
-        public int AlertID { get; set; }
-        public System.DateTime AlertDate { get; set; }
-        public bool IsResolved { get; set; }
-        public Nullable<int> ResolvedBy { get; set; }
-        public Nullable<System.DateTime> ResolvedDate { get; set; }
-        public Nullable<int> IngredientID { get; set; }
+        public IngredientSupplier()
+        {
+            this.InventoryTransactions = new HashSet<InventoryTransactions>();
+        }
     
-        public virtual Employees Employees { get; set; }
+        public int IngredientID { get; set; }
+        public int SupplierID { get; set; }
+        public int IDIngredientSupplier { get; set; }
+    
         public virtual Ingredients Ingredients { get; set; }
+        public virtual Suppliers Suppliers { get; set; }
+        public virtual ICollection<InventoryTransactions> InventoryTransactions { get; set; }
     }
 }

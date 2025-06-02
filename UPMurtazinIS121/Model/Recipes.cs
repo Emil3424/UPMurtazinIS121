@@ -16,9 +16,9 @@ namespace UPMurtazinIS121.Model
     {
         public int RecipeID { get; set; }
         public int MenuItemID { get; set; }
-        public string IngredientsName { get; set; }
         public decimal Quantity { get; set; }
         public string Instructions { get; set; }
+        public Nullable<int> IngredientID { get; set; }
     
         public virtual Ingredients Ingredients { get; set; }
         public virtual MenuItems MenuItems { get; set; }

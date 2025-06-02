@@ -13,10 +13,10 @@ namespace UPMurtazinIS121.Model
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
     
-    public partial class CoffeeDBMurtazinEntities1 : DbContext
+    public partial class CoffeeDBMurtazinEntities2 : DbContext
     {
-        public CoffeeDBMurtazinEntities1()
-            : base("name=CoffeeDBMurtazinEntities1")
+        public CoffeeDBMurtazinEntities2()
+            : base("name=CoffeeDBMurtazinEntities2")
         {
         }
     
@@ -28,6 +28,7 @@ namespace UPMurtazinIS121.Model
         public DbSet<EdIzmereniya> EdIzmereniya { get; set; }
         public DbSet<Employees> Employees { get; set; }
         public DbSet<Ingredients> Ingredients { get; set; }
+        public DbSet<IngredientSupplier> IngredientSupplier { get; set; }
         public DbSet<InventoryAlerts> InventoryAlerts { get; set; }
         public DbSet<InventoryTransactions> InventoryTransactions { get; set; }
         public DbSet<MenuCategories> MenuCategories { get; set; }

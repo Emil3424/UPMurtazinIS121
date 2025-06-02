@@ -1,26 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Data.Entity;
-using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using UPMurtazinIS121.Model;
 
 namespace UPMurtazinIS121.ViewModel
 {
     public class MainViewModel : INotifyPropertyChanged
     {
-        private readonly CoffeeDBMurtazinEntities1 _context = new CoffeeDBMurtazinEntities1();
+        private readonly CoffeeDBMurtazinEntities2 _context = new();
 
-        public ObservableCollection<Ingredients> IngredientsList { get; set; }
+        public ObservableCollection<IngredientModel> IngredientsList { get; } = [];
 
         public MainViewModel()
         {
             _context.Ingredients.Load();
-            IngredientsList = _context.Ingredients.Local;
+            foreach (var ingredient in _context.Ingredients.Local)
+            {
+                IngredientsList.Add(new IngredientModel(ingredient));
+            }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

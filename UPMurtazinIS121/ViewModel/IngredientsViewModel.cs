@@ -1,124 +1,202 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Data;
 using System.Data.Entity;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Input;
 using UPMurtazinIS121.Model;
+using UPMurtazinIS121.Validations;
 
 namespace UPMurtazinIS121.ViewModel
 {
     public class IngredientsViewModel : INotifyPropertyChanged
     {
-        private readonly CoffeeDBMurtazinEntities1 _context;
-        private Ingredients _selectedIngredient;
+        private readonly CoffeeDBMurtazinEntities2 _context;
+        private IngredientModel _selectedIngredient;
 
-        public ObservableCollection<Ingredients> IngredientsList { get; }
+        public ObservableCollection<IngredientModel> IngredientsList { get; } = [];
+        private string _selectedFilterType;
+        public ObservableCollection<string> IngredientTypes { get; } = [];
+        public ObservableCollection<IngredientModel> FilteredIngredientsList { get; } = [];
 
-        public Ingredients SelectedIngredient
+        public ObservableCollection<string> MeasurementUnits { get; } =
+        [
+            "шт", "кг", "г"
+        ];
+        public string SelectedFilterType
+        {
+            get => _selectedFilterType;
+            set
+            {
+                _selectedFilterType = value;
+                OnPropertyChanged();
+                ApplyFilter();
+            }
+        }
+        public IngredientModel SelectedIngredient
         {
             get => _selectedIngredient;
             set
             {
-                if (_selectedIngredient == value) return;
                 _selectedIngredient = value;
                 OnPropertyChanged();
-                ((RelayCommand)SaveCommand).RaiseCanExecuteChanged();
             }
         }
 
         public ICommand SaveCommand { get; }
         public ICommand AddNewCommand { get; }
+        public ICommand DeleteCommand { get; }
 
         public IngredientsViewModel()
         {
-            _context = new CoffeeDBMurtazinEntities1();
+            _context = new CoffeeDBMurtazinEntities2();
             _context.Configuration.ProxyCreationEnabled = false;
-            _context.Configuration.AutoDetectChangesEnabled = true;
-            _context.Ingredients.Load();
-            IngredientsList = _context.Ingredients.Local;
+            LoadData();
 
-            SaveCommand = new RelayCommand(
-                _ => SaveChanges(),
-                _ => SelectedIngredient != null && IsIngredientValid(SelectedIngredient));
+            SaveCommand = new RelayCommand(SaveChanges);
+            AddNewCommand = new RelayCommand(AddNewIngredient);
+            DeleteCommand = new RelayCommand(DeleteIngredient);
 
-            AddNewCommand = new RelayCommand(
-                _ => AddNewIngredient(),
-                _ => true);
-
-            IngredientsList.CollectionChanged += (s, e) =>
-            {
-                if (e.NewItems != null)
-                    foreach (Ingredients item in e.NewItems)
-                        item.PropertyChanged += IngredientPropertyChanged;
-
-                if (e.OldItems != null)
-                    foreach (Ingredients item in e.OldItems)
-                        item.PropertyChanged -= IngredientPropertyChanged;
-            };
+            SortAscCommand = new RelayCommand(_ => SortIngredients(true));
+            SortDescCommand = new RelayCommand(_ => SortIngredients(false));
         }
 
-        private void IngredientPropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            ((RelayCommand)SaveCommand).RaiseCanExecuteChanged();
-        }
-
-        private bool IsIngredientValid(Ingredients ingredient)
-        {
-            return !string.IsNullOrWhiteSpace(ingredient.IngredientsName) &&
-                   ingredient.KolichSklad >= 0 &&
-                   ingredient.MinimKolich >= 0 &&
-                   ingredient.CostForOne >= 0;
-        }
-
-        private void SaveChanges()
+        private void LoadData()
         {
             try
             {
-                _context.SaveChanges();
-                MessageBox.Show("Изменения успешно сохранены в базе данных!", "Успех",
-                    MessageBoxButton.OK, MessageBoxImage.Information);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Ошибка сохранения: {ex.Message}\n\nПроверьте введенные данные.", "Ошибка",
-                    MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
+                _context.Ingredients.Load();
+                IngredientsList.Clear();
+                IngredientTypes.Clear();
+                IngredientTypes.Add("Все типы");
 
-        private void AddNewIngredient()
-        {
-            try
-            {
-                var newIngredient = new Ingredients
+                foreach (var ingredient in _context.Ingredients.Local)
                 {
-                    IngredientsName = "Новый ингредиент",
-                    TypeIngredients = "Тип",
-                    EdinIzmereniya = "кг",
-                    KolichSklad = 0,
-                    MinimKolich = 0,
-                    KolichUpakovka = 1,
-                    CostForOne = 0
-                };
+                    var vm = new IngredientModel(ingredient);
+                    IngredientsList.Add(vm);
 
-                _context.Ingredients.Add(newIngredient);
-                IngredientsList.Add(newIngredient);
-                SelectedIngredient = newIngredient;
+                    if (!string.IsNullOrEmpty(vm.TypeIngredients))
+                    {
+                        if (!IngredientTypes.Contains(vm.TypeIngredients))
+                            IngredientTypes.Add(vm.TypeIngredients);
+                    }
+                }
 
-                MessageBox.Show("Новый ингредиент добавлен. Не забудьте сохранить изменения!", "Добавлено",
-                    MessageBoxButton.OK, MessageBoxImage.Information);
+                ApplyFilter();
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Ошибка при добавлении: {ex.Message}", "Ошибка",
+
+                Console.WriteLine($"Ошибка загрузки: {ex.Message}", " Ошибка");
+            }
+        }
+        private void ApplyFilter()
+        {
+            FilteredIngredientsList.Clear();
+
+            if (string.IsNullOrEmpty(SelectedFilterType))
+            {
+                foreach (var item in IngredientsList)
+                    FilteredIngredientsList.Add(item);
+            }
+            else if (SelectedFilterType == "Все типы")
+            {
+                foreach (var item in IngredientsList)
+                    FilteredIngredientsList.Add(item);
+            }
+            else
+            {
+                foreach (var item in IngredientsList.Where(i => i.TypeIngredients == SelectedFilterType))
+                    FilteredIngredientsList.Add(item);
+            }
+        }
+
+
+        public bool HasChanges()
+        {
+            return _context.ChangeTracker.Entries()
+                .Any(e => e.State != EntityState.Unchanged);
+        }
+
+        private void SaveChanges(object parameter)
+        {
+            try
+            {
+                if (HasChanges())
+                {
+                    _context.SaveChanges();
+                    MessageBox.Show("Изменения сохранены!", "Успех",
+                        MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка сохранения: {ex.Message}", "Ошибка",
                     MessageBoxButton.OK, MessageBoxImage.Error);
             }
+        }
+
+        private void AddNewIngredient(object parameter)
+        {
+            var newIngredient = new Ingredients
+            {
+                IngredientsName = "Новый ингредиент",
+                TypeIngredients = "Тип",
+                EdinIzmereniya = "кг",
+                KolichSklad = 0,
+                MinimKolich = 0,
+                KolichUpakovka = 1,
+                CostForOne = 0,
+                ExpirationDate = DateTime.Now.AddMonths(6)
+            };
+
+            var wrapper = new IngredientModel(newIngredient);
+            IngredientsList.Add(wrapper);
+            SelectedIngredient = wrapper;
+            _context.Ingredients.Add(newIngredient);
+        }
+
+        private void DeleteIngredient(object parameter)
+        {
+            if (SelectedIngredient == null) return;
+
+            if (MessageBox.Show($"Удалить {SelectedIngredient.IngredientsName}?",
+                "Подтверждение",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Question) != MessageBoxResult.Yes) return;
+
+            try
+            {
+                var model = SelectedIngredient.GetModel();
+                _context.Ingredients.Remove(model);
+                IngredientsList.Remove(SelectedIngredient);
+                _context.SaveChanges();
+
+                SelectedIngredient = IngredientsList.FirstOrDefault();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка удаления: {ex.Message}", "Ошибка",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+        public ICommand SortAscCommand { get; }
+        public ICommand SortDescCommand { get; }
+        private void SortIngredients(bool ascending)
+        {
+            var sorted = ascending
+                ? FilteredIngredientsList.OrderBy(s => s.IngredientsName).ToList()
+                : FilteredIngredientsList.OrderByDescending(s => s.IngredientsName).ToList();
+
+            FilteredIngredientsList.Clear();
+            foreach (var s in sorted)
+                FilteredIngredientsList.Add(s);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));

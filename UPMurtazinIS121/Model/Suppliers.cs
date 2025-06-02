@@ -16,8 +16,7 @@ namespace UPMurtazinIS121.Model
     {
         public Suppliers()
         {
-            this.InventoryTransactions = new HashSet<InventoryTransactions>();
-            this.Ingredients = new HashSet<Ingredients>();
+            this.IngredientSupplier = new HashSet<IngredientSupplier>();
         }
     
         public string Name { get; set; }
@@ -29,9 +28,9 @@ namespace UPMurtazinIS121.Model
         public string Email { get; set; }
         public string Logo { get; set; }
         public Nullable<decimal> RatingReliability { get; set; }
+        public int IDSuppliers { get; set; }
     
-        public virtual ICollection<InventoryTransactions> InventoryTransactions { get; set; }
+        public virtual ICollection<IngredientSupplier> IngredientSupplier { get; set; }
         public virtual TypeSupplier TypeSupplier { get; set; }
-        public virtual ICollection<Ingredients> Ingredients { get; set; }
     }
 }
