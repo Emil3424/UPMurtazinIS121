@@ -29,6 +29,7 @@ namespace UPMurtazinIS121.Model
         public string Email { get; set; }
         public string Logo { get; set; }
         public Nullable<decimal> RatingReliability { get; set; }
+        public int IDSuppliers { get; set; }
     
         public virtual ICollection<InventoryTransactions> InventoryTransactions { get; set; }
         public virtual TypeSupplier TypeSupplier { get; set; }

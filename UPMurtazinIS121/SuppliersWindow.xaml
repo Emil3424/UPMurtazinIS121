@@ -136,12 +136,12 @@
                                        Margin="0,0,0,15"/>
 
                             <Label Content="Название:"/>
-                            <TextBox Text="{Binding SelectedSupplier.Name, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True"/>
+                            <TextBox Text="{Binding SelectedSupplier.Name, UpdateSourceTrigger=PropertyChanged}"/>
 
                             <Label Content="Тип:"/>
                             <ComboBox ItemsSource="{Binding SupplierTypes}"
                                       SelectedItem="{Binding SelectedSupplier.Type, UpdateSourceTrigger=PropertyChanged}"
-                                      IsEditable="True">
+                                      IsEditable="True" IsReadOnly="True">
                                 <ComboBox.ItemTemplate>
                                     <DataTemplate>
                                         <TextBlock Text="{Binding}"/>

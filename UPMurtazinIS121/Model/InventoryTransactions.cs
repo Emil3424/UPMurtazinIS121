@@ -19,9 +19,9 @@ namespace UPMurtazinIS121.Model
         public decimal Quantity { get; set; }
         public string TransactionType { get; set; }
         public int EmployeeID { get; set; }
-        public string SupplierName { get; set; }
         public Nullable<System.DateTime> ExpirationDate { get; set; }
         public Nullable<int> IngredientID { get; set; }
+        public Nullable<int> SupplierID { get; set; }
     
         public virtual Employees Employees { get; set; }
         public virtual Ingredients Ingredients { get; set; }

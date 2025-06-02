@@ -152,7 +152,7 @@
                     <Label Content="Тип:"/>
                     <ComboBox ItemsSource="{Binding IngredientTypes}"
                               SelectedItem="{Binding SelectedIngredient.TypeIngredients, UpdateSourceTrigger=PropertyChanged}"
-                              IsEditable="True">
+                              IsEditable="True" IsReadOnly="True">
                         <ComboBox.ItemTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding}"/>
@@ -161,7 +161,16 @@
                     </ComboBox>
 
                     <Label Content="Ед. измерения:"/>
-                    <TextBox Text="{Binding SelectedIngredient.EdinIzmereniya, UpdateSourceTrigger=PropertyChanged}"/>
+                    <!--<TextBox Text="{Binding SelectedIngredient.EdinIzmereniya, UpdateSourceTrigger=PropertyChanged}"/>-->
+                    <ComboBox ItemsSource="{Binding MeasurementUnits}"
+                              SelectedItem="{Binding SelectedIngredient.EdinIzmereniya, UpdateSourceTrigger=PropertyChanged}"
+                              IsEditable="True" IsReadOnly="True">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding}"/>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
 
                     <Label Content="На складе:"/>
                     <TextBox Text="{Binding SelectedIngredient.KolichSklad, StringFormat={}{0:N2}, UpdateSourceTrigger=PropertyChanged}"/>

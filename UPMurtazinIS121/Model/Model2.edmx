@@ -39,11 +39,11 @@
         </EntityType>
         <EntityType Name="IngredientSupplier">
           <Key>
-            <PropertyRef Name="Supplier" />
             <PropertyRef Name="IngredientID" />
+            <PropertyRef Name="SupplierID" />
           </Key>
-          <Property Name="Supplier" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="IngredientID" Type="int" Nullable="false" />
+          <Property Name="SupplierID" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="InventoryAlerts">
           <Key>
@@ -65,9 +65,9 @@
           <Property Name="Quantity" Type="decimal" Precision="10" Scale="2" Nullable="false" />
           <Property Name="TransactionType" Type="nvarchar" MaxLength="20" Nullable="false" />
           <Property Name="EmployeeID" Type="int" Nullable="false" />
-          <Property Name="SupplierName" Type="nvarchar" MaxLength="50" />
           <Property Name="ExpirationDate" Type="date" />
           <Property Name="IngredientID" Type="int" />
+          <Property Name="SupplierID" Type="int" />
         </EntityType>
         <EntityType Name="MenuCategories">
           <Key>
@@ -137,7 +137,7 @@
         </EntityType>
         <EntityType Name="Suppliers">
           <Key>
-            <PropertyRef Name="Name" />
+            <PropertyRef Name="IDSuppliers" />
           </Key>
           <Property Name="Name" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="Type" Type="nvarchar" MaxLength="25" />
@@ -148,6 +148,7 @@
           <Property Name="Email" Type="nvarchar" MaxLength="100" />
           <Property Name="Logo" Type="nvarchar" MaxLength="100" />
           <Property Name="RatingReliability" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="IDSuppliers" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
         </EntityType>
         <EntityType Name="sysdiagrams">
           <Key>
@@ -211,18 +212,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__Ingredien__Suppl__31EC6D26">
-          <End Role="Suppliers" Type="Self.Suppliers" Multiplicity="1" />
-          <End Role="IngredientSupplier" Type="Self.IngredientSupplier" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Suppliers">
-              <PropertyRef Name="Name" />
-            </Principal>
-            <Dependent Role="IngredientSupplier">
-              <PropertyRef Name="Supplier" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK__Ingredien__TypeI__286302EC">
           <End Role="TypeIngredients" Type="Self.TypeIngredients" Multiplicity="0..1" />
           <End Role="Ingredients" Type="Self.Ingredients" Multiplicity="*" />
@@ -283,6 +272,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_IngredientSupplier_Suppliers">
+          <End Role="Suppliers" Type="Self.Suppliers" Multiplicity="1" />
+          <End Role="IngredientSupplier" Type="Self.IngredientSupplier" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Suppliers">
+              <PropertyRef Name="IDSuppliers" />
+            </Principal>
+            <Dependent Role="IngredientSupplier">
+              <PropertyRef Name="SupplierID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_InventoryAlerts_Employees">
           <End Role="Employees" Type="Self.Employees" Multiplicity="0..1" />
           <End Role="InventoryAlerts" Type="Self.InventoryAlerts" Multiplicity="*" />
@@ -336,10 +337,10 @@
           <End Role="InventoryTransactions" Type="Self.InventoryTransactions" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Suppliers">
-              <PropertyRef Name="Name" />
+              <PropertyRef Name="IDSuppliers" />
             </Principal>
             <Dependent Role="InventoryTransactions">
-              <PropertyRef Name="SupplierName" />
+              <PropertyRef Name="SupplierID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -455,10 +456,6 @@
             <End Role="EdIzmereniya" EntitySet="EdIzmereniya" />
             <End Role="Ingredients" EntitySet="Ingredients" />
           </AssociationSet>
-          <AssociationSet Name="FK__Ingredien__Suppl__31EC6D26" Association="Self.FK__Ingredien__Suppl__31EC6D26">
-            <End Role="Suppliers" EntitySet="Suppliers" />
-            <End Role="IngredientSupplier" EntitySet="IngredientSupplier" />
-          </AssociationSet>
           <AssociationSet Name="FK__Ingredien__TypeI__286302EC" Association="Self.FK__Ingredien__TypeI__286302EC">
             <End Role="TypeIngredients" EntitySet="TypeIngredients" />
             <End Role="Ingredients" EntitySet="Ingredients" />
@@ -477,6 +474,10 @@
           </AssociationSet>
           <AssociationSet Name="FK_IngredientSupplier_Ingredients" Association="Self.FK_IngredientSupplier_Ingredients">
             <End Role="Ingredients" EntitySet="Ingredients" />
+            <End Role="IngredientSupplier" EntitySet="IngredientSupplier" />
+          </AssociationSet>
+          <AssociationSet Name="FK_IngredientSupplier_Suppliers" Association="Self.FK_IngredientSupplier_Suppliers">
+            <End Role="Suppliers" EntitySet="Suppliers" />
             <End Role="IngredientSupplier" EntitySet="IngredientSupplier" />
           </AssociationSet>
           <AssociationSet Name="FK_InventoryAlerts_Employees" Association="Self.FK_InventoryAlerts_Employees">
@@ -599,9 +600,9 @@
           <Property Name="Quantity" Type="Decimal" Precision="10" Scale="2" Nullable="false" />
           <Property Name="TransactionType" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="EmployeeID" Type="Int32" Nullable="false" />
-          <Property Name="SupplierName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="ExpirationDate" Type="DateTime" Precision="0" />
           <Property Name="IngredientID" Type="Int32" />
+          <Property Name="SupplierID" Type="Int32" />
           <NavigationProperty Name="Employees" Relationship="Self.FK_InventoryTransactions_Employees" FromRole="InventoryTransactions" ToRole="Employees" />
           <NavigationProperty Name="Ingredients" Relationship="Self.FK_InventoryTransactions_Ingredients" FromRole="InventoryTransactions" ToRole="Ingredients" />
           <NavigationProperty Name="TransactionType1" Relationship="Self.FK__Inventory__Trans__5DCAEF64" FromRole="InventoryTransactions" ToRole="TransactionType" />
@@ -688,7 +689,7 @@
         </EntityType>
         <EntityType Name="Suppliers">
           <Key>
-            <PropertyRef Name="Name" />
+            <PropertyRef Name="IDSuppliers" />
           </Key>
           <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="Type" Type="String" MaxLength="25" FixedLength="false" Unicode="true" />
@@ -699,6 +700,7 @@
           <Property Name="Email" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="Logo" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="RatingReliability" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="IDSuppliers" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <NavigationProperty Name="InventoryTransactions" Relationship="Self.FK_InventoryTransactions_Suppliers" FromRole="Suppliers" ToRole="InventoryTransactions" />
           <NavigationProperty Name="TypeSupplier" Relationship="Self.FK__Suppliers__Type__2E1BDC42" FromRole="Suppliers" ToRole="TypeSupplier" />
           <NavigationProperty Name="Ingredients" Relationship="Self.IngredientSupplier" FromRole="Suppliers" ToRole="Ingredients" />
@@ -882,10 +884,10 @@
           <End Role="InventoryTransactions" Type="Self.InventoryTransactions" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Suppliers">
-              <PropertyRef Name="Name" />
+              <PropertyRef Name="IDSuppliers" />
             </Principal>
             <Dependent Role="InventoryTransactions">
-              <PropertyRef Name="SupplierName" />
+              <PropertyRef Name="SupplierID" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -962,8 +964,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="IngredientSupplier">
-          <End Role="Suppliers" Type="Self.Suppliers" Multiplicity="*" />
           <End Role="Ingredients" Type="Self.Ingredients" Multiplicity="*" />
+          <End Role="Suppliers" Type="Self.Suppliers" Multiplicity="*" />
         </Association>
         <EntityContainer Name="CoffeeDBMurtazinEntities2" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="EdIzmereniya" EntityType="Self.EdIzmereniya" />
@@ -1057,8 +1059,8 @@
             <End Role="Suppliers" EntitySet="Suppliers" />
           </AssociationSet>
           <AssociationSet Name="IngredientSupplier" Association="Self.IngredientSupplier">
-            <End Role="Suppliers" EntitySet="Suppliers" />
             <End Role="Ingredients" EntitySet="Ingredients" />
+            <End Role="Suppliers" EntitySet="Suppliers" />
           </AssociationSet>
         </EntityContainer>
       </Schema>
@@ -1122,9 +1124,9 @@
                 <ScalarProperty Name="Quantity" ColumnName="Quantity" />
                 <ScalarProperty Name="TransactionType" ColumnName="TransactionType" />
                 <ScalarProperty Name="EmployeeID" ColumnName="EmployeeID" />
-                <ScalarProperty Name="SupplierName" ColumnName="SupplierName" />
                 <ScalarProperty Name="ExpirationDate" ColumnName="ExpirationDate" />
                 <ScalarProperty Name="IngredientID" ColumnName="IngredientID" />
+                <ScalarProperty Name="SupplierID" ColumnName="SupplierID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -1213,6 +1215,7 @@
                 <ScalarProperty Name="Email" ColumnName="Email" />
                 <ScalarProperty Name="Logo" ColumnName="Logo" />
                 <ScalarProperty Name="RatingReliability" ColumnName="RatingReliability" />
+                <ScalarProperty Name="IDSuppliers" ColumnName="IDSuppliers" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -1260,11 +1263,11 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <AssociationSetMapping Name="IngredientSupplier" TypeName="CoffeeDBMurtazinModel.IngredientSupplier" StoreEntitySet="IngredientSupplier">
-            <EndProperty Name="Suppliers">
-              <ScalarProperty Name="Name" ColumnName="Supplier" />
-            </EndProperty>
             <EndProperty Name="Ingredients">
               <ScalarProperty Name="IngredientID" ColumnName="IngredientID" />
+            </EndProperty>
+            <EndProperty Name="Suppliers">
+              <ScalarProperty Name="IDSuppliers" ColumnName="SupplierID" />
             </EndProperty>
           </AssociationSetMapping>
         </EntityContainerMapping>

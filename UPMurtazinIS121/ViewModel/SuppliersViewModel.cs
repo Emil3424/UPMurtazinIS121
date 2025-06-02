@@ -21,7 +21,6 @@ namespace UPMurtazinIS121.ViewModel
         public ObservableCollection<SupplierModel> SuppliersList { get; } = [];
         public ObservableCollection<string> SupplierTypes { get; } = [];
         public ObservableCollection<SupplierModel> FilteredSuppliersList { get; } = [];
-        private bool _sortAscending = true;
         public ICommand SortAscCommand { get; }
         public ICommand SortDescCommand { get; }
         public string SelectedFilterType
@@ -60,7 +59,7 @@ namespace UPMurtazinIS121.ViewModel
         private void SortSuppliers(bool ascending)
         {
             var sorted = ascending
-                ? FilteredSuppliersList.OrderBy(s => s.Name).ToList()
+                ? [.. FilteredSuppliersList.OrderBy(s => s.Name)]
                 : FilteredSuppliersList.OrderByDescending(s => s.Name).ToList();
 
             FilteredSuppliersList.Clear();
@@ -136,7 +135,7 @@ namespace UPMurtazinIS121.ViewModel
             var newSupplier = new Suppliers
             {
                 Name = "Новый поставщик",
-                Type = "Тип",
+                Type = "Производитель",
                 YuridAdres = "Адрес",
                 INN = 0,
                 FIO = "ФИО",

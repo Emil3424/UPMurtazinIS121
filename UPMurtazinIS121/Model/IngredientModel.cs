@@ -187,10 +187,6 @@ namespace UPMurtazinIS121.Model
                     case nameof(CostForOne):
                         if (CostForOne < 0) return "Не отрицательное";
                         break;
-                    case nameof(ExpirationDate):
-                        if (ExpirationDate < DateTime.Today)
-                            return "Дата не в прошлом";
-                        break;
                 }
                 return null;
             }
